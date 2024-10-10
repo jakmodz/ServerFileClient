@@ -9,6 +9,7 @@ enum CommandType
 	List,
 	Ping,
 	Unknow,
+	ServerInfo
 };
 class CLI
 {

@@ -88,11 +88,11 @@ void CLI::Update()
         {
             Download(words);
         }
+        break;
         case CommandType::Ping:
         {
             client.Ping();
         }
-        break;
         break;
         case CommandType::List:
         {
@@ -103,10 +103,16 @@ void CLI::Update()
         break;
         case CommandType::Unknow:
         {
-            std::cout << "there is no this kind of command"<<std::endl;
+           Logger << "there is no this kind of command"<<"\n";
         }
         break;
+        
+        case CommandType::ServerInfo:
+        {
+            client.ServerInfo();
         }
+        break;
+    }
     }
 }
 
@@ -117,6 +123,7 @@ CommandType CLI::ParseString(std::string& command)
         if (command == "download") return CommandType::Download;
         if (command == "list") return CommandType::List;
         if (command == "ping") return CommandType::Ping;
+        if (command == "serverinfo") return CommandType::ServerInfo;
 
     return Unknow;
 }

@@ -2,6 +2,7 @@
 #include "MultiLogger.h"
 #include "../../FileServer/FileServer/Macro.h"
 #include "../../FileServer/FileServer/PingAction.h"
+#include "../../FileServer/FileServer/ServerInfoAction.h"
 #include "../../FileServer/FileServer/ClientSideActionExecutor.h"
 using namespace boost::asio;
 Client::Client(const std::string& host, const std::string& port, boost::asio::io_context& io_context): socket(io_context),
@@ -35,15 +36,19 @@ void Client::Init()
    
 }
 
-int Client::Ping()
+void Client::Ping()
 {
-    PingRequest request;
     uint64_t start = NOW_MICROSECONDS();
-    ClientSideActionExecutor<PingAction>::Execute(socket,request);
-    double delta = request.header.creationMoment - start;
+    auto response = ClientSideActionExecutor<PingAction>::Execute(socket,PingRequest());
+    double delta = response->header.creationMoment - start;
     double t = delta / 1000;
     Logger<< "time: " << std::to_string(t) << "\n";
-    return 0;
+}
+
+void Client::ServerInfo()
+{
+    auto response = ClientSideActionExecutor<ServerInfoAction>::Execute(socket, ServerInfoRequest());
+    Logger<<"wersja servera " << response->version << "computer name " << response->machineName << "\n";
 }
 
 std::vector<std::string> Client::ListAllFilesInDir(std::string& FileName)
