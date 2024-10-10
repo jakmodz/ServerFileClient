@@ -88,6 +88,11 @@ void CLI::Update()
         {
             Download(words);
         }
+        case CommandType::Ping:
+        {
+            client.Ping();
+        }
+        break;
         break;
         case CommandType::List:
         {

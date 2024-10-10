@@ -11,6 +11,7 @@ public:
 	std::vector<std::string> GetFileNamesFromDir(std::string& Dir);
 	void DownloadFile(std::string& FileName);
 	void Init();
+	int Ping();
 	std::vector<std::string> ListAllFilesInDir(std::string& FileName);
 private:
 	tcp::resolver resolver;

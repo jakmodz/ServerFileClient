@@ -1,6 +1,8 @@
 #include "Client.h"
 #include "MultiLogger.h"
+#include "../../FileServer/FileServer/Macro.h"
 #include "../../FileServer/FileServer/PingAction.h"
+#include "../../FileServer/FileServer/ClientSideActionExecutor.h"
 using namespace boost::asio;
 Client::Client(const std::string& host, const std::string& port, boost::asio::io_context& io_context): socket(io_context),
 resolver(io_context),
@@ -30,8 +32,18 @@ void Client::Init()
     {
         Logger << "Error in Client::Init: " << e.what() << "\n";
     }
-    PingAction test;
-    write(socket, buffer(&test, sizeof(PingRequest)));
+   
+}
+
+int Client::Ping()
+{
+    PingRequest request;
+    uint64_t start = NOW_MICROSECONDS();
+    ClientSideActionExecutor<PingAction>::Execute(socket,request);
+    double delta = request.header.creationMoment - start;
+    double t = delta / 1000;
+    Logger<< "time: " << std::to_string(t) << "\n";
+    return 0;
 }
 
 std::vector<std::string> Client::ListAllFilesInDir(std::string& FileName)
