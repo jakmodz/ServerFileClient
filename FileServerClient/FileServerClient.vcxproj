@@ -152,6 +152,7 @@
     <ClInclude Include="..\..\FileServer\FileServer\NoneAction.h" />
     <ClInclude Include="..\..\FileServer\FileServer\PingAction.h" />
     <ClInclude Include="..\..\FileServer\FileServer\Protocol.h" />
+    <ClInclude Include="..\..\FileServer\FileServer\PwdAction.h" />
     <ClInclude Include="..\..\FileServer\FileServer\Serializer.h" />
     <ClInclude Include="..\..\FileServer\FileServer\ServerInfoAction.h" />
     <ClInclude Include="CLI.h" />

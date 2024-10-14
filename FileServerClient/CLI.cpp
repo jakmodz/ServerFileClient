@@ -11,7 +11,6 @@ using namespace boost::program_options;
 
 CLI::CLI(int port, const std::string& host, boost::asio::io_context& io_context) : port(port), 
 host(host),
-path("\\"),
 io_context(io_context),
 client(host, std::to_string(port), io_context)
 {
@@ -38,6 +37,7 @@ void CLI::Connect()
     
     client.Init();
     Update();
+    Logger << "connected"<<"\n";
 }
 
 
@@ -54,7 +54,7 @@ bool CLI::TryParse(int argc, char** argv)
             ("help,h", "prints help page ")
             ("port,p", value<int>(&port)->default_value(port), "port")
             ("address,a", value<std::string>(&host)->default_value(host), "host")
-            ("path", value<std::string>(&path)->default_value(this->path.string()), "path")
+            
             ;
         variables_map vm;
         store(parse_command_line(argc, argv, desc), vm);
@@ -73,7 +73,6 @@ void CLI::Update()
     while (true)
     {
         std::string command;
-        Logger << path.string() << ">";
         std::getline(std::cin, command);
         std::vector<std::string> words = GetWordsFromString(command);
 
@@ -87,6 +86,7 @@ void CLI::Update()
         case CommandType::Download:
         {
             Download(words);
+            Logger << "file(s) downloaded" << "\n";
         }
         break;
         case CommandType::Ping:
@@ -96,8 +96,7 @@ void CLI::Update()
         break;
         case CommandType::List:
         {
-            auto Path = path.string();
-            auto names = client.ListAllFilesInDir(Path);
+            auto names = client.ListAllFilesInDir(client.Pwd());
             List(names);
         }
         break;
@@ -112,6 +111,11 @@ void CLI::Update()
             client.ServerInfo();
         }
         break;
+        case CommandType::Pwd:
+        {
+            Logger<<client.Pwd()<<"\n";
+        }
+        break;
     }
     }
 }
@@ -124,6 +128,7 @@ CommandType CLI::ParseString(std::string& command)
         if (command == "list") return CommandType::List;
         if (command == "ping") return CommandType::Ping;
         if (command == "serverinfo") return CommandType::ServerInfo;
+        if (command == "pwd") return CommandType::Pwd;
 
     return Unknow;
 }
@@ -138,14 +143,10 @@ void CLI::Download(std::vector<std::string>& files)
     }
 }
 
-void CLI::Cd(std::string& PathToAdd)
+void CLI::Cd(const std::string& PathToAdd)
 {
     //TODO:dodac sprawdzanie czy istnieje dany katalog 
-    path = path / PathToAdd;
-    if (PathToAdd.find("..") != std::string::npos)
-    {
-        path = boost::filesystem::canonical(path, path.root_path());
-    }
+    
     
 }
 

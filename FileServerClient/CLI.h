@@ -9,7 +9,8 @@ enum CommandType
 	List,
 	Ping,
 	Unknow,
-	ServerInfo
+	ServerInfo,
+	Pwd
 };
 class CLI
 {
@@ -29,12 +30,11 @@ public:
 	static CommandType ParseString(std::string&);
 private:
 	void Download(std::vector<std::string>& files);
-	void Cd(std::string& PathToAdd);
+	void Cd(const std::string& PathToAdd);
 	void List(std::vector<std::string>& names);
 
 	std::string host;
 	int port;
-	boost::filesystem::path path;
 	Client client;
 	boost::asio::io_context& io_context;
 };

@@ -3,6 +3,7 @@
 #include "../../FileServer/FileServer/Macro.h"
 #include "../../FileServer/FileServer/PingAction.h"
 #include "../../FileServer/FileServer/ServerInfoAction.h"
+#include "../../FileServer/FileServer/PwdAction.h"
 #include "../../FileServer/FileServer/ClientSideActionExecutor.h"
 using namespace boost::asio;
 Client::Client(const std::string& host, const std::string& port, boost::asio::io_context& io_context): socket(io_context),
@@ -48,10 +49,17 @@ void Client::Ping()
 void Client::ServerInfo()
 {
     auto response = ClientSideActionExecutor<ServerInfoAction>::Execute(socket, ServerInfoRequest());
-    Logger<<"wersja servera " << response->version << "computer name " << response->machineName << "\n";
+    Logger<<"wersja servera " << response->version << " computer name: " << response->machineName << "\n";
 }
 
-std::vector<std::string> Client::ListAllFilesInDir(std::string& FileName)
+std::string Client::Pwd()
 {
+    auto response = ClientSideActionExecutor<PwdAction>::Execute(socket, PwdRequest());
+    return response->path;
+}
+
+std::vector<std::string> Client::ListAllFilesInDir(const std::string& FileName)
+{
+
 	return std::vector<std::string>();
 }

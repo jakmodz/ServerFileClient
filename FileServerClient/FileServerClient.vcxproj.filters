@@ -74,5 +74,8 @@
     <ClInclude Include="..\..\FileServer\FileServer\ServerInfoAction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\FileServer\FileServer\PwdAction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

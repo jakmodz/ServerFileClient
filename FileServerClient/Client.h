@@ -13,7 +13,8 @@ public:
 	void Init();
 	void Ping();
 	void ServerInfo();
-	std::vector<std::string> ListAllFilesInDir(std::string& FileName);
+	std::string Pwd();
+	std::vector<std::string> ListAllFilesInDir(const std::string& FileName);
 private:
 	tcp::resolver resolver;
 	tcp::socket socket;
