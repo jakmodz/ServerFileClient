@@ -1,10 +1,13 @@
 #include "Client.h"
 #include "MultiLogger.h"
+#include <fstream>
 #include "../../FileServer/FileServer/Macro.h"
 #include "../../FileServer/FileServer/PingAction.h"
 #include "../../FileServer/FileServer/ServerInfoAction.h"
 #include "../../FileServer/FileServer/PwdAction.h"
+#include "../../FileServer/FileServer/CdAction.h"
 #include "../../FileServer/FileServer/ClientSideActionExecutor.h"
+#include "../../FileServer/FileServer/FetchAction.h"
 using namespace boost::asio;
 Client::Client(const std::string& host, const std::string& port, boost::asio::io_context& io_context): socket(io_context),
 resolver(io_context),
@@ -18,9 +21,12 @@ std::vector<std::string> Client::GetFileNamesFromDir(std::string& Dir)
 	return std::vector<std::string>();
 }
 
-void Client::DownloadFile(std::string& FileName)
+void Client::DownloadFile(const std::string& FileName)
 {
-
+    auto response = ClientSideActionExecutor<FetchAction>::Execute(socket, FetchRequest(FileName));
+    std::ofstream File(FileName, std::ios::binary);
+    File.write((char*)response->data.get(),response->size);
+    File.close();
 }
 
 void Client::Init()
@@ -58,8 +64,15 @@ std::string Client::Pwd()
     return response->path;
 }
 
-std::vector<std::string> Client::ListAllFilesInDir(const std::string& FileName)
+void Client::Cd(const std::string PathToAdd)
 {
-
-	return std::vector<std::string>();
+    auto response = ClientSideActionExecutor<CdAction>::Execute(socket, CdRequest(PathToAdd));
+    Logger << "currert path: " << response->path<<"\n";
 }
+
+std::vector<PathInfo> Client::List(const std::string& Path)
+{
+    auto response = ClientSideActionExecutor<ListAction>::Execute(socket, ListRequest(Path));
+    return response->paths;
+}
+

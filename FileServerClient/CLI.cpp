@@ -5,6 +5,7 @@
 #include <boost/algorithm/string.hpp>
 #include "Utility.h"
 #include "MultiLogger.h"
+#include <stdio.h>
 using namespace boost::program_options;
 
 
@@ -36,8 +37,9 @@ void CLI::Connect()
 {
     
     client.Init();
+    Logger << "connected" << "\n";
     Update();
-    Logger << "connected"<<"\n";
+    
 }
 
 
@@ -83,10 +85,10 @@ void CLI::Update()
             Cd(words[1]);
         }
         break;
-        case CommandType::Download:
+        case CommandType::Fetch:
         {
-            Download(words);
-            Logger << "file(s) downloaded" << "\n";
+            Download(words[1]);
+            Logger << "file downloaded" << "\n";
         }
         break;
         case CommandType::Ping:
@@ -96,8 +98,12 @@ void CLI::Update()
         break;
         case CommandType::List:
         {
-            auto names = client.ListAllFilesInDir(client.Pwd());
-            List(names);
+            if (words[1].size() <= 0 )
+            {
+                return;
+            }
+           List(client.List(words[1]));
+
         }
         break;
         case CommandType::Unknow:
@@ -124,7 +130,7 @@ CommandType CLI::ParseString(std::string& command)
 {
     boost::algorithm::to_lower(command);
         if (command == "cd") return CommandType::Cd;
-        if (command == "download") return CommandType::Download;
+        if (command == "fetch") return CommandType::Fetch;
         if (command == "list") return CommandType::List;
         if (command == "ping") return CommandType::Ping;
         if (command == "serverinfo") return CommandType::ServerInfo;
@@ -134,27 +140,30 @@ CommandType CLI::ParseString(std::string& command)
 }
 
 
-void CLI::Download(std::vector<std::string>& files)
-{
-    //TODO: pobieranie
-    for (int i = 1; i < files.size(); i++)
+    void CLI::Download(const std::string & file)
     {
-        client.DownloadFile(files[i]);
+        client.DownloadFile(file);
     }
-}
+    void CLI::Cd(const std::string& PathToAdd)
+    {   
+    client.Cd(PathToAdd);
+    }
 
-void CLI::Cd(const std::string& PathToAdd)
+void CLI::List(const std::vector<PathInfo>& paths)
 {
-    //TODO:dodac sprawdzanie czy istnieje dany katalog 
-    
-    
-}
-
-void CLI::List(std::vector<std::string>& names)
-{
-    for (int  i = 0; i < names.size(); i++)
+    for (auto& info : paths)
     {
-        Logger << names[i]<<"\n";
+        char buffer[4096];
+        if (info.isDirectory)
+        {
+            sprintf_s(buffer, sizeof(buffer), "<DIR> %10llu %5s",info.size,info.name.c_str() );
+        }
+        else
+        {
+            sprintf_s(buffer, sizeof(buffer), "      %10llu %5s", info.size, info.name.c_str());
+        }
+        Logger << buffer<<"\n";
+       
     }
 }
 

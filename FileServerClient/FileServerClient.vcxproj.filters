@@ -77,5 +77,11 @@
     <ClInclude Include="..\..\FileServer\FileServer\PwdAction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\FileServer\FileServer\CdAction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\FileServer\FileServer\ListAction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

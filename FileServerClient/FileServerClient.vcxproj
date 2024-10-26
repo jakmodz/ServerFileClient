@@ -146,8 +146,10 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\FileServer\FileServer\CdAction.h" />
     <ClInclude Include="..\..\FileServer\FileServer\ClientSideActionExecutor.h" />
     <ClInclude Include="..\..\FileServer\FileServer\Deserializer.h" />
+    <ClInclude Include="..\..\FileServer\FileServer\ListAction.h" />
     <ClInclude Include="..\..\FileServer\FileServer\Macro.h" />
     <ClInclude Include="..\..\FileServer\FileServer\NoneAction.h" />
     <ClInclude Include="..\..\FileServer\FileServer\PingAction.h" />

@@ -4,7 +4,7 @@
 #include "Client.h"
 enum CommandType
 {
-	Download,
+	Fetch,
 	Cd,
 	List,
 	Ping,
@@ -29,9 +29,9 @@ public:
 
 	static CommandType ParseString(std::string&);
 private:
-	void Download(std::vector<std::string>& files);
+	void Download(const std::string& file);
 	void Cd(const std::string& PathToAdd);
-	void List(std::vector<std::string>& names);
+	void List(const std::vector<PathInfo>& paths);
 
 	std::string host;
 	int port;
